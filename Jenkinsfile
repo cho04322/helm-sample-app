@@ -1,5 +1,23 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    role: builder
+spec:
+  serviceAccountName: default  # [중요] 아까 권한을 준 SA 이름 (기본은 default)
+  containers:
+  - name: helm
+    image: alpine/helm:3.11.1  # [정석] Helm이 포함된 공식 이미지 사용
+    command:
+    - cat
+    tty: true
+"""
+        }
+    }    
     stages {
         stage('Prepare'){
             steps {
@@ -20,12 +38,14 @@ pipeline {
         }
         stage('Helm Deploy') {
             steps {
-                echo 'Deploying to Kubernetes...'
-                sh """
-                    helm upgrade --install helm-example charts/helm-example \
-                    --namespace jenkins \
-                    --wait
-                """
+                container('helm') {
+                    echo 'Deploying to Kubernetes...'
+                    sh """
+                        helm upgrade --install helm-example charts/helm-example \
+                        --namespace jenkins \
+                        --wait
+                    """
+                }
             }
         }
     }
