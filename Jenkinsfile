@@ -21,6 +21,7 @@ pipeline {
         stage('Helm Deploy') {
             steps {
                 echo 'Deploying to Kubernetes...'
+                // test
                 sh """
                     helm upgrade --install ${RELEASE_NAME} charts/helm-example \
                     --namespace ${NAMESPACE} \
