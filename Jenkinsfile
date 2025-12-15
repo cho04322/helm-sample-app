@@ -18,9 +18,14 @@ pipeline {
                 echo 'build stage'
             }
         }
-        stage('docker build') {
+        stage('Helm Deploy') {
             steps {
-                echo 'docker build stage'
+                echo 'Deploying to Kubernetes...'
+                sh """
+                    helm upgrade --install ${RELEASE_NAME} charts/helm-example \
+                    --namespace ${NAMESPACE} \
+                    --wait
+                """
             }
         }
     }
