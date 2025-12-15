@@ -3,9 +3,9 @@ pipeline {
     stages {
         stage('Prepare'){
             steps {
-                git credentialsId : '{credentialId}',
-                    branch : '{branchName}',
-                    url : 'https://github.com/{repoName}/{projectName}.git'
+                git credentialsId : 'github',
+                    branch : 'master',
+                    url : 'https://github.com/cho04322/helm-sample-app.git'
             }
         }
         stage('test') {
